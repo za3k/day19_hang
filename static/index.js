@@ -3,22 +3,84 @@
 const availableColors = ["lightblue", "pink", "lightgreen"];
 function random_color() { return availableColors[Math.floor(Math.random()*availableColors.length)]; }
 
+class Deferred {
+    constructor() {
+        this.promise = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
+}
+
 class Server {
     _connected = false
     username = null
     on = {}
+    voiceConnection = {} // One RTCPeerConnection per user, with our connection to them in some stage of being set up or connected
+    remoteVoiceOffer = {} // One Deferred per user, with their offer. Can arrive before or after our first message to them.
     constructor(roomId, username) {
         this.roomId = roomId;
         this.promiseConnected = new Promise((resolve, reject) => {
             this.onConnected = resolve;
         });
         this.on.whoareyou = this.sendIntroduction.bind(this);
+        this.on.letstalk = this.getVoiceOffer.bind(this);
     }
     connect(username) {
         if (this.username) return; // Already started login
         this.username = username;
         this.color = random_color();
         this.websocketListen();
+    }
+    waitForVoiceOffer(u) {
+        return this.remoteVoiceOffer[u] ||= new Deferred();
+    }
+    async connectVoice(p) {
+        const {pc, offer, constraints} = await this.createVoiceOffer();
+        pc.username = p.username;
+        this.voiceConnection[p.username] = pc;
+        this.sendVoiceOffer(p.username, offer);
+        const remoteOffer = await this.waitForVoiceOffer(p.username).promise;
+        //console.log("got remote offer", remoteOffer);
+        await pc.setRemoteDescription(remoteOffer);
+    }
+    getVoiceOffer(p) {
+        //console.log("getVoiceOffer", p);
+        this.waitForVoiceOffer(p.username).resolve(p.offer);
+        if (p.to != this.username) return;
+    }
+    async createVoiceOffer() {
+        const pc = new RTCPeerConnection();
+        const constraints = {};
+        const localStream = await this.getMedia(constraints);
+        pc.addEventListener('icecandidate', e => this.onWsIceCandidate(pc, e));
+        pc.addEventListener('iceconnectionstatechange', e => this.onWsIceStateChange(pc, e));
+        pc.addEventListener('track', e => this.onWsGotRemoteStream(pc, e));
+        localStream.getTracks().forEach((track) => {
+            pc.addTrack(track, localStream);
+        });
+        const offer = await pc.createOffer({
+            offerToReceiveAudio: 1,
+            offerToReceiveVideo: 0,
+        });
+        await pc.setLocalDescription(offer);
+        return {pc, offer, constraints}
+    }
+    onWsIceCandidate(pc, e) {
+        //console.log("onWsIceCandidate", pc, e);
+    }
+    onWsIceStateChange(pc, e) {
+        //console.log("onWsIceStateChange", pc, e);
+    }
+    onWsGotRemoteStream(pc, e) {
+        //console.log("onWsGotRemoteStream", pc, e);
+        if (this.on.voiceconnect) this.on.voiceconnect({
+            track: e.streams[0],
+            username: pc.username,
+        });
+    }
+    getMedia() { // return a promise
+        return navigator.mediaDevices.getUserMedia({ video: false, audio: true });
     }
     websocketListen(username) {
         const host = window.origin.split("//")[1];
@@ -39,7 +101,7 @@ class Server {
         if (this.on.wserror) this.on.wserror(ev);
     }
     onWsMessage(ev) {
-        console.log(ev.data, typeof(ev.data));
+        //console.log("[ws message]", ev.data, typeof(ev.data));
         const data = JSON.parse(ev.data);
         if (this.on.wsmessage) this.on.wsmessage(data);
         const type = data.type
@@ -77,6 +139,14 @@ class Server {
             username: this.username,
         })
     }
+    sendVoiceOffer(username, offer) {
+        this.send({
+            type: "letstalk",
+            username: this.username,
+            to: username,
+            offer,
+        });
+    }
 }
 
 $(document).ready(() => {
@@ -112,7 +182,7 @@ $(document).ready(() => {
     }
     function addUser(p) {
         const userbox = $(".user-box");
-        const div = $(`<div class="user" style="background-color: ${p.color||"lightyellow"};">${p.username}</div>`);
+        const div = $(`<div class="user" style="background-color: ${p.color||"lightyellow"};">${p.username}<audio autoplay></audio></div>`);
         userbox.append(div);
         return div;
     }
@@ -130,6 +200,7 @@ $(document).ready(() => {
         // New user
         showSpecial(p, "enters the room");
         seenUsers[p.username] = addUser(p);
+        server.connectVoice(p);
     };
 
     // Chat logic
@@ -144,4 +215,10 @@ $(document).ready(() => {
     server.on.chatmessage = showMessage;
 
     // Voice logic
+    server.on.voiceconnect = (p) => {
+        console.log("voiceconnect", p);
+        const audio = $(seenUsers[p.username]).find("audio");
+        console.log(audio);
+        if (audio[0].srcObject !== p.track) audio[0].srcObject = p.track;
+    };
 });

@@ -9,3 +9,7 @@ Talk and video chat with friends.
 Demo available [here](https://tilde.za3k.com/hackaday/hang).
 
 Source available on [github](https://github.com/za3k/day19_hang).
+
+## Thanks
+
+- Thanks to [webrtc.github.io](https://webrtc.github.io/samples/src/content/peerconnection/pc1/) for the simple [examples](https://webrtc.github.io/samples/src/content/peerconnection/pc1/js/main.js) of the complicated [WebRTC](https://web.dev/webrtc-basics/) protocols.
