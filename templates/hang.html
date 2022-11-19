@@ -1,0 +1,28 @@
+{% extends 'base2.html' %}
+
+{% block header %}
+<h3>Chat - {% block title %}{{ hang_id }}{% endblock %}</h3>
+<script src="{{ url_for("static", filename="index.js") }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="chat vflex{% if current_user.is_authenticated %} logged-in{% endif %}">
+    <div class="hflex">
+        <div class="message-box"></div>
+        <div class="user-container">
+            <div class="user-header">Users</div>
+            <div class="user-box"></div>
+        </div>
+    </div>
+    <div class="hflex">
+        <input class="chat-message hide-nologin" placeholder="type your message here"/>
+        <input class="btn btn-primary send-chat-message hide-nologin" type="button" value="Send"/>
+        {% if current_user.is_authenticated %}
+            <input class="username" type="hidden" value="{{ current_user.id }}"/>
+        {% else %}
+            <input class="username hide-login" placeholder="username, such as guest123"/>
+            <input class="btn btn-primary set-username hide-login" type="button" value="Connect"/>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

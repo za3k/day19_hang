@@ -1,0 +1,150 @@
+/* -- This specific Hack-A-Day project -- */
+
+html, body, .container, .chat {
+    height: 100%;
+}
+
+/* Debug */
+/*
+.chat, .chat * {
+    border: 1px solid;
+    margin: 1px;
+}
+*/
+
+/* Container divs */
+.chat {
+    border-radius: 20px;
+    border: 1px solid lightgray;
+    box-shadow: 10px 10px 10px 10px rgba(1,1,1,0.3);
+    margin: 20px 0 40px 0;
+    padding: 10px;
+}
+.content {
+    margin-bottom: 40px;
+}
+.chat >*:nth-child(1) {
+    flex: 1 1;
+	/*
+    not working
+    overflow-y: hidden;
+    */
+}
+.message-box {
+    flex: 1 1;
+}
+.user-box {
+    min-width: 100px;
+}
+.logged-in .hide-login {
+    display: none;
+}
+.chat:not(.logged-in) .hide-nologin {
+    display: none;
+}
+.chat-message {
+	border-radius: 0 0 0 10px;
+	border-right-width: 0;
+    flex: 1 1;
+}
+.username {
+    flex: 1 1;
+}
+
+/* Content styling */
+.message {
+	background-color: lightyellow;
+	border: 2px solid #666;
+	border-radius: 8px;
+	padding: 8px;
+	width: fit-content;
+	margin: 10px 10px 10px 0;
+}
+.message-from {
+	font-variant: small-caps;
+	display: inline-block;
+	margin-right: 5px;
+}
+.message-text {
+	display: inline-block;
+}
+.user-header {
+    font-variant: small-caps;
+    font-size: x-large;
+    text-align: center;
+}
+.user-box {
+    overflow-y: auto;
+    font-variant:small-caps;
+}
+
+/* -- All Hack-A-Day projects -- */
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.about {
+    white-space: pre-wrap;
+}
+.footer {
+    background-color: rgba(0,0,0,0.2);
+    margin-top: 20px;
+}
+.footer ul {
+    list-style: none;
+    padding-left: 5px;
+}
+
+.navbar-brand-link a {
+    color: #777;
+}
+.navbar-brand-link a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+input[type=number] {
+    height: 36px;
+    width: 80px;
+    text-align: right;
+    padding: 8px 12px 8px 8px;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1;
+    background: rgba(0,0,0,0);
+    width: 24px;
+    margin-left: 10px;
+}
+
+.hflex {
+    display: flex;
+    flex-flow: row nowrap;
+}
+.vflex {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+/* Fullscreen 'content' on request */
+.fullscreen nav.navbar {
+    margin-bottom: 0;
+}
+.fullscreen div.container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.fullscreen .footer {
+    margin-top: 0;
+}
+html.fullscreen, .fullscreen body, .fullscreen .container {
+    height: 100%;
+}

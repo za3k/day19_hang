@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block toplinks %}
+<li><a href="{{ url_for('hang', hang_id='public') }}">Public</a></li>
+<li><a href="{{ url_for('hang_new') }}">Private</a></li>
+{% endblock %}
