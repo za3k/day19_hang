@@ -55,22 +55,22 @@ rooms = collections.defaultdict(BroadcastSpeaker)
 def index():
     return render_template('index.html')
 
-@app.route("/hang/<hang_id>")
+@app.route("/<hang_id>")
 def hang(hang_id):
     return render_template('hang.html', hang_id=hang_id)
 
-@app.route("/hang/new")
+@app.route("/new")
 def hang_new():
     return redirect(url_for("hang", hang_id=random_id()))
     
 sock = Sock(app)
-@sock.route("/ws/hang/<room_id>")
+@sock.route("/ws/<room_id>")
 def hang_listen(ws, room_id):
     with rooms[room_id].listener() as reader:
         while True:
             ws.send(reader.next())
 
-@ajax("/ajax/hang/<room_id>/send")
+@ajax("/ajax/<room_id>/send")
 def hang_send(j, room_id):
     rooms[room_id].put(json.dumps(j)) # No need to be parsing this, really
     return {"success": True}

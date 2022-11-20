@@ -38,7 +38,7 @@ class Server {
     websocketListen(username) {
         const host = window.origin.split("//")[1];
         const protocol = (host.includes("localhost") ? "ws" : "wss");
-        this.ws = new WebSocket(`${protocol}://${host}${window.wsPrefix}/ws/hang/${this.roomId}`);
+        this.ws = new WebSocket(`${protocol}://${host}${window.wsPrefix}/ws/${this.roomId}`);
         this.ws.addEventListener("message", this.onWsMessage.bind(this));
         this.ws.addEventListener("open", this.onWsOpen.bind(this));
         this.ws.addEventListener("error", this.onWsError.bind(this));
@@ -64,7 +64,7 @@ class Server {
     }
     send(data, success) { // We could use the websocket for this too, but python's multitasking isn't great
         $.ajax({
-            url: `${window.ajaxPrefix}/ajax/hang/${this.roomId}/send`,
+            url: `${window.ajaxPrefix}/ajax/${this.roomId}/send`,
             method: "POST",
             data: JSON.stringify(data),
             dataType: 'json',
