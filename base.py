@@ -151,6 +151,10 @@ def ajax(route):
     return x
 app.ajax = ajax
 
+@app.route("/favicon.ico")
+def favicon():
+    return "",404
+
 def random_id():
     LETTERS=string.ascii_letters + string.digits
     return "".join(random.choice(LETTERS) for letter in range(10))

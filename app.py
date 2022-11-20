@@ -55,7 +55,7 @@ rooms = collections.defaultdict(BroadcastSpeaker)
 def index():
     return render_template('index.html')
 
-@app.route("/<hang_id>")
+@app.route("/r/<hang_id>")
 def hang(hang_id):
     return render_template('hang.html', hang_id=hang_id)
 

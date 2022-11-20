@@ -37,7 +37,7 @@ class Server {
     }
     websocketListen(username) {
         const host = window.origin.split("//")[1];
-        const protocol = (host.includes("localhost") ? "ws" : "wss");
+        const protocol = (host.includes("localhost:5000") ? "ws" : "wss");
         this.ws = new WebSocket(`${protocol}://${host}${window.wsPrefix}/ws/${this.roomId}`);
         this.ws.addEventListener("message", this.onWsMessage.bind(this));
         this.ws.addEventListener("open", this.onWsOpen.bind(this));
