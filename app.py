@@ -26,9 +26,11 @@ class BroadcastListener():
         self.speaker = speaker
         self.queue = queue.Queue(5)
     def put(self, message):
-        if self.queue.full():
-            _ = self.queue.get(block=False)
-        self.queue.put(message, block=False)
+        while True:
+            try:
+                return self.queue.put(message, block=False)
+            except queue.Full:
+                _ = self.queue.get(block=False)
     def next(self):
         return self.queue.get()
     def __enter__(self):

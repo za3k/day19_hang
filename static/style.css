@@ -34,7 +34,7 @@ html, body, .container, .chat {
     flex: 1 1;
 }
 .user-box {
-    min-width: 100px;
+    width: 200px;
 }
 .logged-in .hide-login {
     display: none;
@@ -76,6 +76,20 @@ html, body, .container, .chat {
 .user-box {
     overflow-y: auto;
     font-variant:small-caps;
+}
+.user {
+    position: relative;
+    min-height: 30px;
+}
+.user > span {
+    display: inline-block;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    opacity: 0.8;
+}
+video.feed {
+    width: 200px;
 }
 
 /* -- All Hack-A-Day projects -- */
