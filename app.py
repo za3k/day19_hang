@@ -35,7 +35,7 @@ class BroadcastListener():
         return self.queue.get()
     def __enter__(self):
         return self
-    def __exit__(self):
+    def __exit__(self, type_, value, traceback):
         self.close()
     def close(self):
         self.speaker.listeners.remove(self)
