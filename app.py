@@ -12,7 +12,7 @@ load_info({
     "project_name": "Hack-A-Hang",
     "source_url": "https://github.com/za3k/day19_hang",
     "subdir": "/hackaday/hang",
-    "description": "a place to hang and talk with your friends",
+    "description": "a place to hang and talk with your friends. DOES NOT WORK",
     "instructions": "Click one of the links above to get started. (Registration is optional.)",
     "login": True,
     "fullscreen": False,
